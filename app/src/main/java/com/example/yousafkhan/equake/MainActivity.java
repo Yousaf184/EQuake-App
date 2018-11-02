@@ -1,9 +1,12 @@
 package com.example.yousafkhan.equake;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -21,6 +24,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
+    private ListView listView;
+    private ArrayList<EarthQuake> earthQuakesInfoList;
 
     private static final String apiURL =
        "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2018-01-01&limit=30";
@@ -31,13 +36,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         progressBar = findViewById(R.id.progress_bar);
+        listView = findViewById(R.id.listview);
 
         new ApiRequest(this).execute(apiURL);
+        setListViewListener();
     }
 
     private ArrayList<EarthQuake> parseJSON(String jsonString) {
 
-        ArrayList<EarthQuake> earthQuakesInfoList = new ArrayList<>();
+        earthQuakesInfoList = new ArrayList<>();
 
         double magnitude = 0;
         String location = "";
@@ -80,9 +87,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateListView(ArrayList<EarthQuake> list) {
-        ListView listView = findViewById(R.id.listview);
         EarthQuakeAdapter adapter = new EarthQuakeAdapter(this, list);
         listView.setAdapter(adapter);
+    }
+
+    private void setListViewListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                EarthQuake eq = earthQuakesInfoList.get(position);
+
+                // open browser to load the url to view details of the clicked earthquake
+                Intent seeDetails = new Intent(Intent.ACTION_VIEW);
+                seeDetails.setData(Uri.parse(eq.getDetailURL()));
+                startActivity(seeDetails);
+            }
+        });
     }
 
     // async task class
