@@ -1,5 +1,7 @@
 package com.example.yousafkhan.equake;
 
+import android.support.v4.content.ContextCompat;
+
 public class EarthQuake {
 
     private double magnitude;

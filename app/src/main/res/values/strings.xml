@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">EQuake</string>
+    <string name="magnitude_placeholder">2.8</string>
+    <string name="location_one_placeholder">88 km N of</string>
+    <string name="location_two_placeholder">Yelizovo, Russia</string>
+    <string name="date_placeholder">Jan 29, 2018</string>
+    <string name="time_placeholder">9:25 PM</string>
 </resources>

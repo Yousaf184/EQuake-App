@@ -1,12 +1,15 @@
 package com.example.yousafkhan.equake;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,6 +56,42 @@ public class EarthQuakeAdapter extends ArrayAdapter<EarthQuake> {
         return new String[]{eDate, eTime};
     }
 
+    // format magnitude value to one digit after the decimal
+    private String formatMagnitude(double magnitude) {
+        DecimalFormat df = new DecimalFormat("0.0");
+        return df.format(magnitude);
+    }
+
+    // returns the background color for magnitude textview
+    public int getMagnitudeColor(double magnitude) {
+        int mag = (int) Math.floor(magnitude);
+        int magnitudeColorID = -1;
+
+        if(mag >= 0 && mag <= 2) {
+            magnitudeColorID = R.color.magnitude1;
+        } else if(mag > 2 && mag <= 3) {
+            magnitudeColorID = R.color.magnitude2;
+        } else if(mag > 3 && mag <= 4) {
+            magnitudeColorID = R.color.magnitude3;
+        } else if(mag > 4 && mag <= 5) {
+            magnitudeColorID = R.color.magnitude4;
+        } else if(mag > 5 && mag <= 6) {
+            magnitudeColorID = R.color.magnitude5;
+        } else if(mag > 6 && mag <= 7) {
+            magnitudeColorID = R.color.magnitude6;
+        } else if(mag > 7 && mag <= 8) {
+            magnitudeColorID = R.color.magnitude7;
+        } else if(mag > 8 && mag <= 9) {
+            magnitudeColorID = R.color.magnitude8;
+        } else if(mag > 9 && mag <= 10) {
+            magnitudeColorID = R.color.magnitude9;
+        } else if(mag > 10) {
+            magnitudeColorID = R.color.magnitude10plus;
+        }
+
+        return ContextCompat.getColor(getContext(), magnitudeColorID);
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -76,7 +115,9 @@ public class EarthQuakeAdapter extends ArrayAdapter<EarthQuake> {
 
         EarthQuake eq = getItem(position);
 
-        holder.magnitudeText.setText(String.valueOf(eq.getMagnitude()));
+        String magnitude = formatMagnitude(eq.getMagnitude());
+
+        holder.magnitudeText.setText(magnitude);
 
         // split location in to two parts
         String[] splitLocation = splitLocation(eq.getLocation());
@@ -89,6 +130,14 @@ public class EarthQuakeAdapter extends ArrayAdapter<EarthQuake> {
 
         holder.dateText.setText(dateTime[0]);
         holder.timeText.setText(dateTime[1]);
+
+        // set color of magnitude textView background shape
+        //get the background
+        GradientDrawable magnitudeBackground = (GradientDrawable) holder.magnitudeText.getBackground();
+        // get the appropriate background color for magnitude textview
+        int magBgColor = getMagnitudeColor(eq.getMagnitude());
+        // set the background color
+        magnitudeBackground.setColor(magBgColor);
 
         return convertView;
     }

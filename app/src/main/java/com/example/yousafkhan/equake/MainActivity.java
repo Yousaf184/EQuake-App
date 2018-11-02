@@ -3,7 +3,6 @@ package com.example.yousafkhan.equake;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -24,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
 
     private static final String apiURL =
-       "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2018-01-01&endtime=2018-06-01&limit=10";
+       "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2018-01-01&limit=30";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

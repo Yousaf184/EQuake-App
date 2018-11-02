@@ -9,36 +9,40 @@
         android:id="@+id/magnitude_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:text="2.8"
-        android:paddingTop="8dp"/>
+        android:textSize="19sp"
+        android:text="@string/magnitude_placeholder"
+        android:background="@drawable/magnitue_circle"
+        android:gravity="center"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="@id/location_text_container"
+        app:layout_constraintBottom_toBottomOf="@id/location_text_container"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/location_text_container"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="@id/magnitude_text"
-        app:layout_constraintBottom_toBottomOf="@id/magnitude_text"
         app:layout_constraintLeft_toRightOf="@id/magnitude_text"
         android:paddingTop="8dp"
-        android:paddingLeft="25dp">
+        android:paddingLeft="10dp">
 
         <TextView
             android:id="@+id/location_text_one"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:text="88 km N of"
+            android:text="@string/location_one_placeholder"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/location_text_two"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:text="Yelizovo, Russia"
-            app:layout_constraintTop_toBottomOf="@id/location_text_one"/>
+            android:textSize="19sp"
+            android:text="@string/location_two_placeholder"
+            app:layout_constraintTop_toBottomOf="@id/location_text_one"
+            android:textColor="@color/colorPrimary" />
 
     </LinearLayout>
 
@@ -47,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="13sp"
-        android:text="Jan 29, 2018"
+        android:text="@string/date_placeholder"
         app:layout_constraintRight_toRightOf="parent"/>
 
     <TextView
@@ -55,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="13sp"
-        android:text="9:25 PM"
+        android:text="@string/time_placeholder"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/date_text"/>
 
