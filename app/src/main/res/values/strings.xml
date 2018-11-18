@@ -5,4 +5,10 @@
     <string name="location_two_placeholder">Yelizovo, Russia</string>
     <string name="date_placeholder">Jan 29, 2018</string>
     <string name="time_placeholder">9:25 PM</string>
+    <string name="settings_menu_item">Settings</string>
+    <string name="reload_data">Reload Data</string>
+    <string name="settings_title">Earthquake Settings</string>
+    <string name="settings_min_magnitude_label">Minimum Magnitude</string>
+    <string name="settings_min_magnitude_key" translatable="false">min_magnitude</string>
+    <string name="settings_min_magnitude_default" translatable="false">0</string>
 </resources>

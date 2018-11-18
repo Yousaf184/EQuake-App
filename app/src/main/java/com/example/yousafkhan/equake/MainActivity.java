@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -42,9 +44,17 @@ public class MainActivity extends AppCompatActivity {
         setListViewListener();
     }
 
+
     private void populateListView(ArrayList<EarthQuake> list) {
-        EarthQuakeAdapter adapter = new EarthQuakeAdapter(this, list);
-        listView.setAdapter(adapter);
+        // if listview already has an adapter set, then use that adapter
+        EarthQuakeAdapter adapter = (EarthQuakeAdapter) listView.getAdapter();
+
+        if(adapter == null) {
+            adapter = new EarthQuakeAdapter(this, list);
+            listView.setAdapter(adapter);
+        } else {
+            adapter.addAll(list);
+        }
     }
 
     private void setListViewListener() {
@@ -60,5 +70,41 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(seeDetails);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.reload_data:
+                ArrayList<EarthQuake> list = earthQuakeViewmodel.getDataList().getValue();
+
+                if(list != null) {
+                    // clear listview adapter
+                    EarthQuakeAdapter adapter = (EarthQuakeAdapter) listView.getAdapter();
+                    adapter.clear();
+                    adapter.notifyDataSetChanged();
+
+                    progressBar.setVisibility(View.VISIBLE);
+
+                    earthQuakeViewmodel.loadData();
+                }
+
+                break;
+
+            case R.id.settings:
+                Intent openSettings = new Intent(this, SettingsActivity.class);
+                startActivity(openSettings);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

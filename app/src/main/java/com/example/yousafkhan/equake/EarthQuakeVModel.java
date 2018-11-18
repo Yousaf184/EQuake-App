@@ -1,8 +1,15 @@
 package com.example.yousafkhan.equake;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,11 +21,19 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class EarthQuakeVModel extends ViewModel {
+public class EarthQuakeVModel extends AndroidViewModel {
 
     private static MutableLiveData<ArrayList<EarthQuake>> earthQuakesInfoList;
+//    private static final String apiURL =
+//            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2018-01-01&limit=30";
+
     private static final String apiURL =
-            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2018-01-01&limit=30";
+            "https://earthquake.usgs.gov/fdsnws/event/1/query?";
+
+    public EarthQuakeVModel(@NonNull Application application) {
+        super(application);
+
+    }
 
     public MutableLiveData<ArrayList<EarthQuake>> getDataList() {
 
@@ -35,11 +50,37 @@ public class EarthQuakeVModel extends ViewModel {
         return earthQuakesInfoList.getValue().get(position);
     }
 
-    private void loadData() {
-        new ApiRequest().execute(apiURL);
+    public void loadData() {
+        String url = buildURL(apiURL);
+        new ApiRequest().execute(url);
     }
 
-    private void parseJSON(String jsonString) {
+    // construct appropriate api url by reading minimum magnitude from preferences
+    private String buildURL(String url) {
+
+        // application context
+        Context context = getApplication().getApplicationContext();
+
+        // read minimum magnitude preference value
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String minMagnitude = sharedPrefs.getString(context.getString(
+                                                        R.string.settings_min_magnitude_key),
+                                                        context.getString(R.string.settings_min_magnitude_default)
+                                                   );
+
+        // build url
+        Uri baseURL = Uri.parse(url);
+        Uri.Builder uriBuilder = baseURL.buildUpon();
+
+        uriBuilder.appendQueryParameter("format", "geojson");
+        uriBuilder.appendQueryParameter("starttime", "2018-01-01");
+        uriBuilder.appendQueryParameter("limit", "30");
+        uriBuilder.appendQueryParameter("minmag", minMagnitude);
+
+        return uriBuilder.toString();
+    }
+
+    private static void parseJSON(String jsonString) {
 
         ArrayList<EarthQuake> list = new ArrayList<>();
 
@@ -87,8 +128,6 @@ public class EarthQuakeVModel extends ViewModel {
     // async task class
     private static class ApiRequest extends AsyncTask<String, Void, InputStream> {
 
-        private EarthQuakeVModel eqModel = new EarthQuakeVModel();
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -106,6 +145,9 @@ public class EarthQuakeVModel extends ViewModel {
                 url = new URL(apiURL);
                 httpConn = (HttpURLConnection) url.openConnection();
                 httpConn.setRequestMethod("GET");
+                httpConn.setReadTimeout(15000);
+                httpConn.setConnectTimeout(15000);
+                httpConn.connect();
                 inputStream = httpConn.getInputStream();
 
             } catch (Exception ex) {
@@ -150,7 +192,7 @@ public class EarthQuakeVModel extends ViewModel {
                 }
 
                 // parse the json string
-                eqModel.parseJSON(strBuilder.toString());
+                EarthQuakeVModel.parseJSON(strBuilder.toString());
             }
         }
     }
