@@ -10,4 +10,11 @@
         android:inputType="numberDecimal"
         android:selectAllOnFocus="true" />
 
+    <ListPreference
+        android:title="@string/settings_order_by_label"
+        android:key="@string/settings_order_by_key"
+        android:defaultValue="@string/settings_order_by_default"
+        android:entries="@array/settings_order_by_labels"
+        android:entryValues="@array/settings_order_by_values" />
+
 </PreferenceScreen>

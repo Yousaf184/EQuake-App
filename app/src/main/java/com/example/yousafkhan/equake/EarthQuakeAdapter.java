@@ -51,7 +51,8 @@ public class EarthQuakeAdapter extends ArrayAdapter<EarthQuake> {
         String eDate = formattedDate.substring(0, index - 2);
 
         // example eTime = 2:43 AM
-        String eTime  = formattedDate.substring(index - 1);
+        // trim the leading trailing spaces, there will be leading space when there's only single hours digit
+        String eTime  = formattedDate.substring(index - 2).trim();
 
         return new String[]{eDate, eTime};
     }

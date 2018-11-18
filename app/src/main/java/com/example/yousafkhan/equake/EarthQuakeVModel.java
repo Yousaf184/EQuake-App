@@ -63,10 +63,16 @@ public class EarthQuakeVModel extends AndroidViewModel {
 
         // read minimum magnitude preference value
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String minMagnitude = sharedPrefs.getString(context.getString(
-                                                        R.string.settings_min_magnitude_key),
-                                                        context.getString(R.string.settings_min_magnitude_default)
+
+        String minMagnitude = sharedPrefs.getString(
+                                                     context.getString(R.string.settings_min_magnitude_key),
+                                                     context.getString(R.string.settings_min_magnitude_default)
                                                    );
+
+        String orderBy = sharedPrefs.getString(
+                                                context.getString(R.string.settings_order_by_key),
+                                                context.getString(R.string.settings_order_by_default)
+                                              );
 
         // build url
         Uri baseURL = Uri.parse(url);
@@ -76,6 +82,7 @@ public class EarthQuakeVModel extends AndroidViewModel {
         uriBuilder.appendQueryParameter("starttime", "2018-01-01");
         uriBuilder.appendQueryParameter("limit", "30");
         uriBuilder.appendQueryParameter("minmag", minMagnitude);
+        uriBuilder.appendQueryParameter("orderby", orderBy);
 
         return uriBuilder.toString();
     }

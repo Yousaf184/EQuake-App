@@ -23,15 +23,21 @@ public class SettingsActivity extends AppCompatActivity {
             addPreferencesFromResource(R.xml.preference);
 
             // get preference
-            Preference preference = findPreference(getString(R.string.settings_min_magnitude_key));
+            Preference minMagPref = findPreference(getString(R.string.settings_min_magnitude_key));
+            Preference orderByPref = findPreference(getString(R.string.settings_order_by_key));
 
             //set preference change listener
-            preference.setOnPreferenceChangeListener(this);
+            minMagPref.setOnPreferenceChangeListener(this);
+            orderByPref.setOnPreferenceChangeListener(this);
 
             // show preference value in preference summary when the settings activity is launched
-            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
-            String preferenceValue = sharedPrefs.getString(preference.getKey(), "");
-            preference.setSummary(preferenceValue);
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(minMagPref.getContext());
+
+            String preferenceValue = sharedPrefs.getString(minMagPref.getKey(), "");
+            minMagPref.setSummary(preferenceValue);
+
+            String prefValue = sharedPrefs.getString(orderByPref.getKey(), "");
+            orderByPref.setSummary(prefValue);
         }
 
         @Override
