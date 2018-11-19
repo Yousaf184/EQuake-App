@@ -2,17 +2,22 @@ package com.example.yousafkhan.equake;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -28,20 +33,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        progressBar = findViewById(R.id.progress_bar);
-        listView = findViewById(R.id.listview);
+        if(isInternetConnected()) {
+            progressBar = findViewById(R.id.progress_bar);
+            listView = findViewById(R.id.listview);
 
-        earthQuakeViewmodel = ViewModelProviders.of(this).get(EarthQuakeVModel.class);
+            earthQuakeViewmodel = ViewModelProviders.of(this).get(EarthQuakeVModel.class);
 
-        earthQuakeViewmodel.getDataList().observe(this, new Observer<ArrayList<EarthQuake>>() {
-            @Override
-            public void onChanged(@Nullable ArrayList<EarthQuake> earthQuakes) {
-                progressBar.setVisibility(View.GONE);
-                populateListView(earthQuakes);
-            }
-        });
+            earthQuakeViewmodel.getDataList().observe(this, new Observer<ArrayList<EarthQuake>>() {
+                @Override
+                public void onChanged(@Nullable ArrayList<EarthQuake> earthQuakes) {
+                    progressBar.setVisibility(View.GONE);
+                    populateListView(earthQuakes);
+                }
+            });
 
-        setListViewListener();
+            setListViewListener();
+
+        } else {
+            progressBar.setVisibility(View.GONE);
+            TextView noInternetLabel = findViewById(R.id.no_internet_label);
+            noInternetLabel.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -70,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(seeDetails);
             }
         });
+    }
+
+    private boolean isInternetConnected() {
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
     }
 
     @Override
