@@ -11,9 +11,11 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 public class EarthQuakeVModel extends AndroidViewModel {
 
     private static MutableLiveData<ArrayList<EarthQuake>> earthQuakesInfoList;
+    private static MutableLiveData<Boolean> errorConnectingToAPI;
 //    private static final String apiURL =
 //            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2018-01-01&limit=30";
 
@@ -43,6 +46,14 @@ public class EarthQuakeVModel extends AndroidViewModel {
         }
 
         return earthQuakesInfoList;
+    }
+
+    public MutableLiveData<Boolean> getErrorConnectingToAPI() {
+        if(errorConnectingToAPI == null) {
+            errorConnectingToAPI = new MutableLiveData<>();
+        }
+
+        return errorConnectingToAPI;
     }
 
     public EarthQuake getItemAtPosition(int position) {
@@ -123,8 +134,8 @@ public class EarthQuakeVModel extends AndroidViewModel {
                 list.add(eq);
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (JSONException ex) {
+            System.out.println(ex.getLocalizedMessage());
         }
 
         // update live data
@@ -157,7 +168,8 @@ public class EarthQuakeVModel extends AndroidViewModel {
                 inputStream = httpConn.getInputStream();
 
             } catch (Exception ex) {
-                ex.printStackTrace();
+                System.out.println("Error message = "+ex.getLocalizedMessage());
+                errorConnectingToAPI.postValue(true);
             } finally {
                 if(httpConn != null) {
                     httpConn.disconnect();
@@ -193,8 +205,8 @@ public class EarthQuakeVModel extends AndroidViewModel {
 
                     bufferedReader.close();
 
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                } catch (IOException ex) {
+                    System.out.println(ex.getLocalizedMessage());
                 }
 
                 // parse the json string

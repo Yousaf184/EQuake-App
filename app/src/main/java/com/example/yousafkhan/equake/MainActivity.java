@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
     private ListView listView;
+    private TextView errorInfoText;
 
     private EarthQuakeVModel earthQuakeViewmodel;
 
@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        errorInfoText = findViewById(R.id.error_info_text);
 
         if(isInternetConnected()) {
             progressBar = findViewById(R.id.progress_bar);
@@ -47,12 +49,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            earthQuakeViewmodel.getErrorConnectingToAPI().observe(this, new Observer<Boolean>() {
+                @Override
+                public void onChanged(@Nullable Boolean aBoolean) {
+                    if(aBoolean) {
+                        progressBar.setVisibility(View.GONE);
+                        errorInfoText.setText(getResources().getString(R.string.error_connecting_to_api));
+                        errorInfoText.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+
             setListViewListener();
 
         } else {
             progressBar.setVisibility(View.GONE);
-            TextView noInternetLabel = findViewById(R.id.no_internet_label);
-            noInternetLabel.setVisibility(View.VISIBLE);
+            errorInfoText.setText(getResources().getString(R.string.no_internet_label));
+            errorInfoText.setVisibility(View.VISIBLE);
         }
     }
 
@@ -112,6 +125,11 @@ public class MainActivity extends AppCompatActivity {
 
                     progressBar.setVisibility(View.VISIBLE);
 
+                    earthQuakeViewmodel.loadData();
+                } else {
+                    // hide error info textview
+                    errorInfoText.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.VISIBLE);
                     earthQuakeViewmodel.loadData();
                 }
 

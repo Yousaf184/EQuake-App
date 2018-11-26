@@ -9,6 +9,7 @@
     <string name="reload_data">Reload Data</string>
     <string name="settings_title">Earthquake Settings</string>
     <string name="no_internet_label">Please connect to internet</string>
+    <string name="error_connecting_to_api">Something went wrong while connecting to API</string>
 
     <!-- Strings for minimum magnitude preference -->
     <string name="settings_min_magnitude_label">Minimum Magnitude</string>
