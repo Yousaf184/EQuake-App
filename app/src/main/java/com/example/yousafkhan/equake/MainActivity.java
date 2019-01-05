@@ -4,9 +4,11 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,7 +22,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ProgressBar progressBar;
     private ListView listView;
@@ -67,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
             errorInfoText.setText(getResources().getString(R.string.no_internet_label));
             errorInfoText.setVisibility(View.VISIBLE);
         }
+
+        // register preference change listener
+        PreferenceManager.getDefaultSharedPreferences(this)
+                         .registerOnSharedPreferenceChangeListener(this);
     }
 
 
@@ -142,5 +149,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        errorInfoText.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        earthQuakeViewmodel.loadData();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                         .unregisterOnSharedPreferenceChangeListener(this);
     }
 }
